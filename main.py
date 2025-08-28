@@ -48,6 +48,7 @@ def start_services(config):
                 dispatch(response, ports)
                 if memory.gui:
                     memory.gui.log_event(f"dispatch:{user}")
+                    memory.gui.display_output(response)
         except Exception as e:  # pragma: no cover
             handle_error(e)
 

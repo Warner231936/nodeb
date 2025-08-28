@@ -10,6 +10,7 @@
 - Introduce graceful shutdown for services and database connections.
 - Develop comprehensive self-state monitoring to inform engagement decisions.
 - Extend self-state metrics to track disk and network pressure.
+- Persist dispatched outputs for auditing and user review.
 
 
 ## Progress
@@ -17,6 +18,8 @@
 - Added GUI queue display and chaos log.
 - Discord bot now forwards all messages for analysis.
 - Database connection respects configuration-defined database name.
+
+- GUI now shows final responses and logs errors via popup message boxes.
 
 - Self-state checks CPU/memory usage and maintenance mode to gate engagement.
 
@@ -32,3 +35,4 @@
 - Expand engagement logic and persistence once LLM integration stabilizes.
 - Add unit tests for database and engagement modules.
 - Implement full self-state tracking and resource-based response control.
+- Store dispatched outputs for later review and improve error recovery.

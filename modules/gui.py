@@ -25,6 +25,7 @@ class SystemGUI:
         self.queue_label = None
         self.messages_box = None
         self.chaos_box = None
+        self.outputs_box = None
         self.start_time = time.time()
 
     # ------------------------------------------------------------------
@@ -47,6 +48,10 @@ class SystemGUI:
         tk.Label(self.root, text="Chaos").pack()
         self.chaos_box = tk.Text(self.root, height=8, state="disabled")
         self.chaos_box.pack(fill="both", expand=True)
+
+        tk.Label(self.root, text="Outputs").pack()
+        self.outputs_box = tk.Text(self.root, height=8, state="disabled")
+        self.outputs_box.pack(fill="both", expand=True)
 
     # ------------------------------------------------------------------
     def _update_stats(self):
@@ -101,6 +106,14 @@ class SystemGUI:
         self.chaos_box.insert(tk.END, text + "\n")
         self.chaos_box.see(tk.END)
         self.chaos_box.configure(state="disabled")
+
+    def display_output(self, text: str) -> None:
+        if not self.outputs_box:
+            return
+        self.outputs_box.configure(state="normal")
+        self.outputs_box.insert(tk.END, text + "\n")
+        self.outputs_box.see(tk.END)
+        self.outputs_box.configure(state="disabled")
 
     # ------------------------------------------------------------------
     def run(self):

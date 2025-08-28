@@ -37,7 +37,9 @@ async def run_bot(token: str, memory: CatchMemory, handler):
     if discord is None:
         print("discord.py not installed; bot will not run.")
         return
-    bot = RequestBot(memory=memory, handler=handler, intents=discord.Intents.default())
+    intents = discord.Intents.default()
+    intents.message_content = True
+    bot = RequestBot(memory=memory, handler=handler, intents=intents)
     try:
         await bot.start(token)
     except Exception as e:

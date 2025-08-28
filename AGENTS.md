@@ -10,12 +10,17 @@
 - Introduce graceful shutdown for services and database connections.
 - Develop comprehensive self-state monitoring to inform engagement decisions.
 
+
 ## Progress
 ### Completed
 - Added GUI queue display and chaos log.
 - Discord bot now forwards all messages for analysis.
 - Database connection respects configuration-defined database name.
+
+- Self-state checks CPU/memory usage and maintenance mode to gate engagement.
+
 - Placeholder self-state module integrated into engagement logic.
+
 
 ### In Progress
 - Integrating real LLM models and refining database storage.

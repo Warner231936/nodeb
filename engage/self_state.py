@@ -1,3 +1,4 @@
+
 """Lightweight system self‑awareness checks."""
 
 from __future__ import annotations
@@ -23,16 +24,16 @@ def _maintenance_mode() -> bool:
         return False
 
 
+
 def is_available() -> bool:
     """Return whether the system is in a state to respond.
 
-    The check currently considers a configurable maintenance flag as well as
-    CPU and memory utilisation thresholds.
-    """
+
 
     if _maintenance_mode():
         return False
     cpu = psutil.cpu_percent()
     mem = psutil.virtual_memory().percent
     return cpu < _CPU_LIMIT and mem < _MEM_LIMIT
+
 

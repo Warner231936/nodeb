@@ -10,21 +10,28 @@ except Exception:  # pragma: no cover - library may be missing
 from .catch import CatchMemory
 
 
-class RequestBot(discord.Client):
-    def __init__(self, memory: CatchMemory, handler, **kwargs):
-        super().__init__(**kwargs)
-        self.memory = memory
-        self.handler = handler
+if discord is not None:
+    class RequestBot(discord.Client):
+        """Listen for messages and forward them for processing."""
 
-    async def on_message(self, message):
-        if message.author == self.user:
-            return
-        content = message.content
-        if content.startswith('!req'):
-            req_text = content[4:].strip()
-            self.memory.remember(message.author.name, req_text)
-            await message.channel.send("Request noted.")
-        await self.handler(message.author.name, content)
+        def __init__(self, memory: CatchMemory, handler, **kwargs):
+            super().__init__(**kwargs)
+            self.memory = memory
+            self.handler = handler
+
+        async def on_message(self, message):
+            if message.author == self.user:
+                return
+            content = message.content
+            if content.startswith('!req'):
+                req_text = content[4:].strip()
+                self.memory.remember(message.author.name, req_text)
+                await message.channel.send("Request noted.")
+            await self.handler(message.author.name, content)
+else:  # pragma: no cover - executed only when discord.py missing
+    class RequestBot:  # type: ignore
+        def __init__(self, *_, **__):
+            raise RuntimeError("discord.py not installed")
 
 async def run_bot(token: str, memory: CatchMemory, handler):
     if discord is None:

@@ -26,14 +26,10 @@ def _maintenance_mode() -> bool:
 
 
 def is_available() -> bool:
-    """Return whether the system is in a state to respond.
-
-
+    """Return whether the system is in a state to respond."""
 
     if _maintenance_mode():
         return False
     cpu = psutil.cpu_percent()
     mem = psutil.virtual_memory().percent
     return cpu < _CPU_LIMIT and mem < _MEM_LIMIT
-
-

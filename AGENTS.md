@@ -9,6 +9,7 @@
 - Implement full reflection and long-term memory modules.
 - Introduce graceful shutdown for services and database connections.
 - Develop comprehensive self-state monitoring to inform engagement decisions.
+- Extend self-state metrics to track disk and network pressure.
 
 
 ## Progress
@@ -20,6 +21,7 @@
 - Self-state checks CPU/memory usage and maintenance mode to gate engagement.
 
 - Placeholder self-state module integrated into engagement logic.
+- Repaired self-state availability check to ensure runtime gating works.
 
 
 ### In Progress

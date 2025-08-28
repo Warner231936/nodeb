@@ -1,6 +1,6 @@
 """MongoDB logging utilities."""
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 try:
     from pymongo import MongoClient
@@ -8,7 +8,15 @@ except Exception:  # pragma: no cover
     MongoClient = None
 
 class Database:
-    def __init__(self, uri: str):
+    """Simple wrapper around :class:`pymongo.MongoClient`.
+
+    The database name can be provided separately from the URI so that a
+    generic connection string like ``mongodb://localhost:27017`` may be
+    used.  If ``name`` is omitted the client will attempt to use the
+    default database from the URI.
+    """
+
+    def __init__(self, uri: str, name: Optional[str] = None):
         self.client = None
         self.db = None
         if MongoClient is None:
@@ -16,7 +24,7 @@ class Database:
             return
         try:
             self.client = MongoClient(uri, serverSelectionTimeoutMS=2000)
-            self.db = self.client.get_default_database()
+            self.db = self.client[name] if name else self.client.get_default_database()
             self.client.admin.command('ping')
             print("Connected to MongoDB.")
         except Exception as e:

@@ -7,14 +7,17 @@
 ## Suggestions
 - Consider adding comprehensive unit tests for each module.
 - Implement full reflection and long-term memory modules.
+- Introduce graceful shutdown for services and database connections.
 
 ## Progress
 ### Completed
 - Added GUI queue display and chaos log.
 - Discord bot now forwards all messages for analysis.
+- Database connection respects configuration-defined database name.
 
 ### In Progress
-- Integrating real LLM models and database storage.
+- Integrating real LLM models and refining database storage.
 
 ### Next Steps
 - Expand engagement logic and persistence once LLM integration stabilizes.
+- Add unit tests for database and engagement modules.

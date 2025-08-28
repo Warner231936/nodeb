@@ -20,7 +20,8 @@ from engage.database import Database
 
 def start_services(config):
     memory = CatchMemory()
-    db = Database(config["database"]["uri"])
+    db_cfg = config["database"]
+    db = Database(db_cfg["uri"], db_cfg.get("name"))
 
     ports = config["ports"]["dispatch"]
 

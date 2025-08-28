@@ -1,0 +1,10 @@
+{
+  "discord_token": "YOUR_DISCORD_TOKEN",
+  "ports": {
+    "dispatch": [3535, 3536, 3537]
+  },
+  "database": {
+    "uri": "mongodb://localhost:27017",
+    "name": "engagement"
+  }
+}

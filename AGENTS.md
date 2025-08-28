@@ -12,6 +12,8 @@
 - Extend self-state metrics to track disk and network pressure.
 - Persist dispatched outputs for auditing and user review.
 
+- Enhance Discord message sanitization and request auditing.
+
 
 ## Progress
 ### Completed
@@ -25,6 +27,8 @@
 
 - Placeholder self-state module integrated into engagement logic.
 - Repaired self-state availability check to ensure runtime gating works.
+
+- Discord bot sanitizes messages and handles `!req` commands case-insensitively.
 
 
 ### In Progress

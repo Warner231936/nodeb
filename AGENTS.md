@@ -17,6 +17,7 @@
 - Add retries and timeout handling for external reflection service.
 
 - Automate multi-machine deployment and configuration validation.
+- Expand configuration validation with type checks and defaults.
 
 
 ## Progress
@@ -38,6 +39,7 @@
 - GUI uses dark glitchcore theme with neon accents.
 - README documents multi-machine setup.
 - Configuration-driven settings consolidated; added remote listener and MongoDB installer script.
+- Config loader warns about missing keys to aid troubleshooting.
 
 ### In Progress
 - Integrating real LLM models and refining database storage.
@@ -48,4 +50,3 @@
 - Add unit tests for database and engagement modules.
 - Implement full self-state tracking and resource-based response control.
 - Store dispatched outputs for later review and improve error recovery.
-- Validate configuration file and handle missing keys gracefully.

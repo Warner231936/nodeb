@@ -8,6 +8,7 @@
 - GUI styled with dark glitchcore theme.
 - README explains multi-machine setup.
 - Config-driven settings consolidated; added remote listener and MongoDB install script.
+- Config loader warns about missing keys.
 
 ## In Progress
 - Integrating real LLM models and refining database storage.
@@ -18,10 +19,11 @@
 - Enhance request logging and auditing.
 - Add retries and metrics for reflection service.
 - Automate distributed deployment scripts.
-- Validate configuration file for required keys.
+- Expand configuration validation with type checks and defaults.
 
 ## Completed Summary
 - Discord bot sanitizes messages and routes them to intent and emotion analysis.
 - Reflection module falls back to placeholder when service unavailable.
 - Installer and main runner hardened; GUI themed; documentation expanded.
 - All runtime settings centralized in config; listener and DB installer introduced.
+- Config loader now warns about missing keys to prevent misconfiguration.

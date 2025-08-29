@@ -37,7 +37,7 @@
 - Installer upgrades pip and requirements; main runner validates config and optional Discord token.
 - GUI uses dark glitchcore theme with neon accents.
 - README documents multi-machine setup.
-
+- Configuration-driven settings consolidated; added remote listener and MongoDB installer script.
 
 ### In Progress
 - Integrating real LLM models and refining database storage.
@@ -48,3 +48,4 @@
 - Add unit tests for database and engagement modules.
 - Implement full self-state tracking and resource-based response control.
 - Store dispatched outputs for later review and improve error recovery.
+- Validate configuration file and handle missing keys gracefully.

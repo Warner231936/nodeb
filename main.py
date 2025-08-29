@@ -22,17 +22,27 @@ from engage.database import Database
 def start_services(config: dict) -> CatchMemory:
     """Spin up background helpers based on the provided configuration."""
 
-    memory = CatchMemory()
-    db_cfg = config.get("database", {})
-    db = Database(db_cfg.get("uri", "mongodb://localhost:27017"), db_cfg.get("name"))
+    catch_cfg = config.get("catch", {})
+    memory = CatchMemory(catch_cfg.get("capacity"))
 
-    ports = config.get("ports", {}).get("dispatch", [])
+    db_cfg = config.get("database", {})
+    db = Database(
+        db_cfg.get("uri"),
+        db_cfg.get("name"),
+        db_cfg.get("timeout_ms"),
+    )
+
+    dispatch_cfg = config.get("dispatch", {})
+    ports = dispatch_cfg.get("ports", [])
+    host = dispatch_cfg.get("host")
+
+    llm_cfg = config.get("llm", {})
 
     # Start placeholder LLMs
-    llm_intent = LocalLLM()
-    llm_emotion = LocalLLM()
-    llm_thoughts = LocalLLM()
-    llm_reflect = LocalLLM()
+    llm_intent = LocalLLM(llm_cfg.get("intent_model"))
+    llm_emotion = LocalLLM(llm_cfg.get("emotion_model"))
+    llm_thoughts = LocalLLM(llm_cfg.get("thought_model"))
+    llm_reflect = LocalLLM(llm_cfg.get("reflect_model"))
     for llm in (llm_intent, llm_emotion, llm_thoughts, llm_reflect):
         threading.Thread(target=llm.start, daemon=True).start()
 
@@ -45,10 +55,12 @@ def start_services(config: dict) -> CatchMemory:
             memory.enqueue(user, message, intent, emotion)
             if should_respond(user, message, intent, emotion):
                 thoughts = summarize(user, intent, emotion, llm_thoughts)
-                reflection = reflect(user, message, llm_reflect)
+                reflection = reflect(
+                    user, message, llm_reflect, config.get("reflection", {})
+                )
                 response = f"{user}: {thoughts} | reflect: {reflection}"
                 log_interaction(db, user, message, intent, emotion)
-                dispatch(response, ports)
+                dispatch(response, ports, host)
                 if memory.gui:
                     memory.gui.log_event(f"dispatch:{user}")
                     memory.gui.display_output(response)

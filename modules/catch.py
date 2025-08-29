@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional
 class CatchMemory:
     """In-memory storage for short-lived data."""
 
-    def __init__(self, capacity: int = 1000):
+    def __init__(self, capacity: int):
         self.store: Dict[str, Any] = {}
         self.queue: List[Dict[str, Any]] = []
         self.capacity = capacity

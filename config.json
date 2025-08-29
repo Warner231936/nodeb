@@ -1,11 +1,36 @@
 {
   "discord_token": "YOUR_DISCORD_TOKEN",
   "maintenance": false,
-  "ports": {
-    "dispatch": [3535, 3536, 3537]
+  "dispatch": {
+    "host": "127.0.0.1",
+    "ports": [3535, 3536, 3537]
+  },
+  "listener": {
+    "host": "0.0.0.0",
+    "ports": [3535, 3536, 3537]
   },
   "database": {
     "uri": "mongodb://localhost:27017",
-    "name": "engagement"
+    "name": "engagement",
+    "timeout_ms": 2000
+  },
+  "catch": {
+    "capacity": 1000
+  },
+  "self_state": {
+    "cpu_limit": 90,
+    "mem_limit": 90
+  },
+  "reflection": {
+    "url": "http://localhost:5150/api/v1/generate",
+    "timeout": 5,
+    "max_tokens": 64
+  },
+  "llm": {
+    "intent_model": "X:/0Rcore/IntentEmotion/BERT-tiny-emotion-intent",
+    "emotion_model": "X:/0Rcore/IntentEmotion/BERT-tiny-emotion-intent",
+    "thought_model": "X:/0Rcore/Rmodel/Phi-3-mini-4k-instruct-q4.gguf",
+    "reflect_model": "X:/0Rcore/Rmodel/Phi-3-mini-4k-instruct-q4.gguf",
+    "runner": "X:/0Rcore/bin/koboldcpp"
   }
 }

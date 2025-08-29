@@ -27,30 +27,72 @@ class SystemGUI:
         self.chaos_box = None
         self.outputs_box = None
         self.start_time = time.time()
+        self.theme = {
+            "bg": "#0a0a0a",
+            "fg": "#39ff14",  # neon green text
+            "accent": "#ff00ff",  # hot pink progress bar
+        }
 
     # ------------------------------------------------------------------
     def _create_widgets(self):
+        style = ttk.Style()
+        style.theme_use("default")
+        style.configure(
+            "TProgressbar", troughcolor=self.theme["bg"], background=self.theme["accent"]
+        )
+
         stats = ["CPU", "Memory", "Disk", "GPU", "Uptime"]
         for stat in stats:
-            label = tk.Label(self.root, text=f"{stat}: N/A")
+            label = tk.Label(
+                self.root,
+                text=f"{stat}: N/A",
+                bg=self.theme["bg"],
+                fg=self.theme["fg"],
+            )
             label.pack()
             self.labels[stat] = label
 
-        tk.Label(self.root, text="Messages").pack()
-        self.messages_box = tk.Text(self.root, height=8, state="disabled")
+        tk.Label(self.root, text="Messages", bg=self.theme["bg"], fg=self.theme["fg"]).pack()
+        self.messages_box = tk.Text(
+            self.root,
+            height=8,
+            state="disabled",
+            bg="#000000",
+            fg=self.theme["accent"],
+            insertbackground=self.theme["accent"],
+        )
         self.messages_box.pack(fill="both", expand=True)
 
         self.queue_bar = ttk.Progressbar(self.root, maximum=self.memory.capacity)
         self.queue_bar.pack(fill="x")
-        self.queue_label = tk.Label(self.root, text=f"Queue: 0/{self.memory.capacity}")
+        self.queue_label = tk.Label(
+            self.root,
+            text=f"Queue: 0/{self.memory.capacity}",
+            bg=self.theme["bg"],
+            fg=self.theme["fg"],
+        )
         self.queue_label.pack()
 
-        tk.Label(self.root, text="Chaos").pack()
-        self.chaos_box = tk.Text(self.root, height=8, state="disabled")
+        tk.Label(self.root, text="Chaos", bg=self.theme["bg"], fg=self.theme["fg"]).pack()
+        self.chaos_box = tk.Text(
+            self.root,
+            height=8,
+            state="disabled",
+            bg="#000000",
+            fg="#ff003c",
+            insertbackground="#ff003c",
+        )
         self.chaos_box.pack(fill="both", expand=True)
 
-        tk.Label(self.root, text="Outputs").pack()
-        self.outputs_box = tk.Text(self.root, height=8, state="disabled")
+        tk.Label(self.root, text="Outputs", bg=self.theme["bg"], fg=self.theme["fg"]).pack()
+        self.outputs_box = tk.Text(
+            self.root,
+            height=8,
+            state="disabled",
+            bg="#000000",
+            fg="#00ffff",
+            insertbackground="#00ffff",
+        )
         self.outputs_box.pack(fill="both", expand=True)
 
     # ------------------------------------------------------------------
@@ -122,6 +164,7 @@ class SystemGUI:
             return
         self.root = tk.Tk()
         self.root.title("System Status")
+        self.root.configure(bg=self.theme["bg"])
         self._create_widgets()
         self._update_stats()
         threading.Thread(target=self.root.mainloop, daemon=True).start()

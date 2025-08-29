@@ -16,14 +16,14 @@ class Database:
     default database from the URI.
     """
 
-    def __init__(self, uri: str, name: Optional[str] = None):
+    def __init__(self, uri: str, name: Optional[str] = None, timeout_ms: Optional[int] = None):
         self.client = None
         self.db = None
         if MongoClient is None:
             print("pymongo not installed; database disabled.")
             return
         try:
-            self.client = MongoClient(uri, serverSelectionTimeoutMS=2000)
+            self.client = MongoClient(uri, serverSelectionTimeoutMS=timeout_ms)
             self.db = self.client[name] if name else self.client.get_default_database()
             self.client.admin.command('ping')
             print("Connected to MongoDB.")

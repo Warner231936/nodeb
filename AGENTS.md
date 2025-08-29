@@ -14,6 +14,8 @@
 
 - Enhance Discord message sanitization and request auditing.
 
+- Add retries and timeout handling for external reflection service.
+
 
 ## Progress
 ### Completed

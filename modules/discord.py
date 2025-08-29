@@ -1,4 +1,4 @@
-"""Discord bot module."""
+"""Discord bot module with basic message sanitization."""
 
 import asyncio
 
@@ -19,14 +19,19 @@ if discord is not None:
             self.memory = memory
             self.handler = handler
 
+        def sanitize(self, content: str) -> str:
+            """Remove non-printable characters and trim whitespace."""
+            return "".join(ch for ch in content if ch.isprintable()).strip()
+
         async def on_message(self, message):
             if message.author == self.user:
                 return
-            content = message.content
-            if content.startswith('!req'):
+            content = self.sanitize(message.content)
+            if content.lower().startswith('!req'):
                 req_text = content[4:].strip()
                 self.memory.remember(message.author.name, req_text)
                 await message.channel.send("Request noted.")
+                content = req_text
             await self.handler(message.author.name, content)
 else:  # pragma: no cover - executed only when discord.py missing
     class RequestBot:  # type: ignore

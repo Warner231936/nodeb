@@ -16,6 +16,8 @@
 
 - Add retries and timeout handling for external reflection service.
 
+- Automate multi-machine deployment and configuration validation.
+
 
 ## Progress
 ### Completed
@@ -31,6 +33,10 @@
 - Repaired self-state availability check to ensure runtime gating works.
 
 - Discord bot sanitizes messages and handles `!req` commands case-insensitively.
+
+- Installer upgrades pip and requirements; main runner validates config and optional Discord token.
+- GUI uses dark glitchcore theme with neon accents.
+- README documents multi-machine setup.
 
 
 ### In Progress

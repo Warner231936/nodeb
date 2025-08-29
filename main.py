@@ -4,6 +4,7 @@ import argparse
 import json
 import threading
 import time
+from pathlib import Path
 
 from modules.gui import SystemGUI
 from modules.discord import start_bot
@@ -18,12 +19,14 @@ from modules.reflect import reflect
 from engage.engagement import should_respond, log_interaction
 from engage.database import Database
 
-def start_services(config):
-    memory = CatchMemory()
-    db_cfg = config["database"]
-    db = Database(db_cfg["uri"], db_cfg.get("name"))
+def start_services(config: dict) -> CatchMemory:
+    """Spin up background helpers based on the provided configuration."""
 
-    ports = config["ports"]["dispatch"]
+    memory = CatchMemory()
+    db_cfg = config.get("database", {})
+    db = Database(db_cfg.get("uri", "mongodb://localhost:27017"), db_cfg.get("name"))
+
+    ports = config.get("ports", {}).get("dispatch", [])
 
     # Start placeholder LLMs
     llm_intent = LocalLLM()
@@ -52,12 +55,16 @@ def start_services(config):
         except Exception as e:  # pragma: no cover
             handle_error(e)
 
-    # Start Discord bot
-    threading.Thread(
-        target=start_bot,
-        args=(config.get("discord_token"), memory, process_message),
-        daemon=True,
-    ).start()
+    # Start Discord bot if token provided
+    token = config.get("discord_token")
+    if token:
+        threading.Thread(
+            target=start_bot,
+            args=(token, memory, process_message),
+            daemon=True,
+        ).start()
+    else:  # pragma: no cover - startup notice
+        print("Discord token missing; bot not started.")
 
     # Example of processing a placeholder message
     threading.Thread(target=process_message, args=("system", "hello"), daemon=True).start()
@@ -65,13 +72,20 @@ def start_services(config):
     return memory
 
 
-def main():
+def main() -> None:
+    """CLI entry point for starting services and optional GUI."""
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('--no-gui', action='store_true', help='Run without GUI')
-    parser.add_argument('--test', action='store_true', help='Run test mode and exit')
+    parser.add_argument("--no-gui", action="store_true", help="Run without GUI")
+    parser.add_argument("--test", action="store_true", help="Run test mode and exit")
     args = parser.parse_args()
 
-    with open('config.json') as f:
+    cfg_path = Path("config.json")
+    if not cfg_path.exists():
+        print("config.json not found; aborting start-up.")
+        return
+
+    with cfg_path.open() as f:
         config = json.load(f)
 
     memory = start_services(config)
@@ -90,5 +104,6 @@ def main():
         except KeyboardInterrupt:
             pass
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

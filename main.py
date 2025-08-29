@@ -5,6 +5,7 @@ import json
 import threading
 import time
 from pathlib import Path
+from typing import Dict, Optional
 
 from modules.gui import SystemGUI
 from modules.discord import start_bot
@@ -18,6 +19,36 @@ from modules.dispatch import dispatch
 from modules.reflect import reflect
 from engage.engagement import should_respond, log_interaction
 from engage.database import Database
+
+
+def load_config(path: Path) -> Optional[Dict]:
+    """Load configuration and report any missing required keys."""
+
+    if not path.exists():
+        print("config.json not found; aborting start-up.")
+        return None
+
+    with path.open() as f:
+        config = json.load(f)
+
+    required = {
+        "dispatch": ["host", "ports"],
+        "database": ["uri", "name"],
+        "catch": ["capacity"],
+        "self_state": ["cpu_limit", "mem_limit"],
+    }
+    missing = []
+    for section, keys in required.items():
+        cfg = config.get(section)
+        if cfg is None:
+            missing.append(section)
+            continue
+        for key in keys:
+            if key not in cfg:
+                missing.append(f"{section}.{key}")
+    if missing:
+        print("Config missing keys:", ", ".join(missing))
+    return config
 
 def start_services(config: dict) -> CatchMemory:
     """Spin up background helpers based on the provided configuration."""
@@ -93,12 +124,9 @@ def main() -> None:
     args = parser.parse_args()
 
     cfg_path = Path("config.json")
-    if not cfg_path.exists():
-        print("config.json not found; aborting start-up.")
+    config = load_config(cfg_path)
+    if config is None:
         return
-
-    with cfg_path.open() as f:
-        config = json.load(f)
 
     memory = start_services(config)
 

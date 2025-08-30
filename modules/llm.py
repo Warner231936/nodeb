@@ -39,3 +39,10 @@ class LocalLLM:
         except Exception as e:  # pragma: no cover - generation errors
             print(f"LLM generation error ({e}); returning offline response.")
             return self.offline_response
+
+    def stop(self) -> None:
+        """Stop the LLM and prevent further generation."""
+
+        if self.running:
+            self.running = False
+            print(f"LLM at {self.model_path} stopped")

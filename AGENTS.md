@@ -7,7 +7,7 @@
 ## Suggestions
 - Consider adding comprehensive unit tests for each module.
 - Implement full reflection and long-term memory modules.
-- Introduce graceful shutdown for services and database connections.
+- Enhance service manager with thread joining and Discord bot cleanup.
 - Develop comprehensive self-state monitoring to inform engagement decisions.
 - Extend self-state metrics to track disk and network pressure.
 - Persist dispatched outputs for auditing and user review.
@@ -71,3 +71,9 @@
 - Partially done: automated model retrieval and comprehensive installer logging.
 - Next: add tests for installer fallback and integrate real models.
 - Estimated completion: 40%
+
+- Done: added service manager with graceful shutdown for LLMs and database; documented shutdown.
+- Worked on: background service cleanup and README instructions.
+- Partially done: explicit thread joins and Discord bot shutdown.
+- Next: ensure all threads terminate cleanly and add tests for shutdown logic.
+- Estimated completion: 45%

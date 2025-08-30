@@ -38,3 +38,13 @@ class Database:
             self.db.logs.insert_one(record)
         except Exception as e:
             print(f"Logging failed: {e}")
+
+    def close(self) -> None:
+        """Close the database connection if open."""
+
+        if self.client:
+            try:
+                self.client.close()
+            finally:
+                self.client = None
+                self.db = None

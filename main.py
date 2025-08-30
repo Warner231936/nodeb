@@ -5,8 +5,9 @@ import json
 import threading
 import time
 from copy import deepcopy
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 
 from modules.gui import SystemGUI
 from modules.discord import start_bot
@@ -20,6 +21,20 @@ from modules.dispatch import dispatch
 from modules.reflect import reflect
 from engage.engagement import should_respond, log_interaction
 from engage.database import Database
+
+
+@dataclass
+class Services:
+    """Container for background helpers to allow graceful shutdown."""
+
+    memory: CatchMemory
+    db: Database
+    llms: List[LocalLLM]
+
+    def shutdown(self) -> None:
+        for llm in self.llms:
+            llm.stop()
+        self.db.close()
 
 
 DEFAULT_CONFIG: Dict[str, Any] = {
@@ -102,7 +117,7 @@ def load_config(path: Path) -> Optional[Dict]:
     _apply_defaults(config, DEFAULT_CONFIG)
     return config
 
-def start_services(config: dict) -> CatchMemory:
+def start_services(config: dict) -> Services:
     """Spin up background helpers based on the provided configuration."""
 
     catch_cfg = config.get("catch", {})
@@ -127,7 +142,8 @@ def start_services(config: dict) -> CatchMemory:
     llm_emotion = LocalLLM(llm_cfg.get("emotion_model"), offline_resp)
     llm_thoughts = LocalLLM(llm_cfg.get("thought_model"), offline_resp)
     llm_reflect = LocalLLM(llm_cfg.get("reflect_model"), offline_resp)
-    for llm in (llm_intent, llm_emotion, llm_thoughts, llm_reflect):
+    llms = [llm_intent, llm_emotion, llm_thoughts, llm_reflect]
+    for llm in llms:
         threading.Thread(target=llm.start, daemon=True).start()
 
     def process_message(user: str, message: str):
@@ -165,7 +181,7 @@ def start_services(config: dict) -> CatchMemory:
     # Example of processing a placeholder message
     threading.Thread(target=process_message, args=("system", "hello"), daemon=True).start()
 
-    return memory
+    return Services(memory, db, llms)
 
 
 def main() -> None:
@@ -181,21 +197,24 @@ def main() -> None:
     if config is None:
         return
 
-    memory = start_services(config)
+    services = start_services(config)
+    memory = services.memory
 
-    if not args.no_gui:
-        gui = SystemGUI(memory)
-        memory.bind_gui(gui)
-        gui.run()
+    try:
+        if not args.no_gui:
+            gui = SystemGUI(memory)
+            memory.bind_gui(gui)
+            gui.run()
 
-    if args.test:
-        time.sleep(2)
-    else:
-        try:
+        if args.test:
+            time.sleep(2)
+        else:
             while True:
                 time.sleep(1)
-        except KeyboardInterrupt:
-            pass
+    except KeyboardInterrupt:
+        pass
+    finally:
+        services.shutdown()
 
 
 if __name__ == "__main__":

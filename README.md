@@ -70,6 +70,11 @@ To run a lightweight smoke test without launching the GUI:
 python main.py --no-gui --test
 ```
 
+## Shutdown
+
+Press `Ctrl+C` in the terminal to terminate the services. Database
+connections close and background LLM helpers stop cleanly.
+
 ## License
 
 This project is provided as-is without a specific license.

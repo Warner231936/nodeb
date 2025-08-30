@@ -4,8 +4,9 @@ import argparse
 import json
 import threading
 import time
+from copy import deepcopy
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from modules.gui import SystemGUI
 from modules.discord import start_bot
@@ -21,8 +22,62 @@ from engage.engagement import should_respond, log_interaction
 from engage.database import Database
 
 
+DEFAULT_CONFIG: Dict[str, Any] = {
+    "discord_token": "YOUR_DISCORD_TOKEN",
+    "maintenance": False,
+    "dispatch": {"host": "127.0.0.1", "ports": [3535, 3536, 3537]},
+    "listener": {"host": "0.0.0.0", "ports": [3535, 3536, 3537]},
+    "database": {
+        "uri": "mongodb://localhost:27017",
+        "name": "engagement",
+        "timeout_ms": 2000,
+    },
+    "catch": {"capacity": 1000},
+    "self_state": {"cpu_limit": 90, "mem_limit": 90},
+    "reflection": {"url": "http://localhost:5150/api/v1/generate", "timeout": 5, "max_tokens": 64},
+    "llm": {
+        "intent_model": "X:/0Rcore/IntentEmotion/BERT-tiny-emotion-intent",
+        "emotion_model": "X:/0Rcore/IntentEmotion/BERT-tiny-emotion-intent",
+        "thought_model": "X:/0Rcore/Rmodel/Phi-3-mini-4k-instruct-q4.gguf",
+        "reflect_model": "X:/0Rcore/Rmodel/Phi-3-mini-4k-instruct-q4.gguf",
+        "runner": "X:/0Rcore/bin/koboldcpp",
+    },
+}
+
+
+def _apply_defaults(config: Dict[str, Any], defaults: Dict[str, Any], prefix: str = "") -> None:
+    """Recursively merge ``defaults`` into ``config`` while noting issues."""
+
+    missing: list[str] = []
+    type_errors: list[str] = []
+
+    def recurse(cfg: Dict[str, Any], defs: Dict[str, Any], path: str) -> None:
+        for key, def_val in defs.items():
+            cur_path = f"{path}.{key}" if path else key
+            val = cfg.get(key)
+            if isinstance(def_val, dict):
+                if not isinstance(val, dict):
+                    cfg[key] = deepcopy(def_val)
+                    missing.append(cur_path)
+                else:
+                    recurse(val, def_val, cur_path)
+            else:
+                if val is None:
+                    cfg[key] = def_val
+                    missing.append(cur_path)
+                elif not isinstance(val, type(def_val)):
+                    cfg[key] = def_val
+                    type_errors.append(cur_path)
+
+    recurse(config, defaults, prefix)
+    if missing:
+        print("Config missing keys (defaults applied):", ", ".join(missing))
+    if type_errors:
+        print("Config type errors (defaults applied):", ", ".join(type_errors))
+
+
 def load_config(path: Path) -> Optional[Dict]:
-    """Load configuration and report any missing required keys."""
+    """Load configuration and apply defaults with type checks."""
 
     if not path.exists():
         print("config.json not found; aborting start-up.")
@@ -31,23 +86,7 @@ def load_config(path: Path) -> Optional[Dict]:
     with path.open() as f:
         config = json.load(f)
 
-    required = {
-        "dispatch": ["host", "ports"],
-        "database": ["uri", "name"],
-        "catch": ["capacity"],
-        "self_state": ["cpu_limit", "mem_limit"],
-    }
-    missing = []
-    for section, keys in required.items():
-        cfg = config.get(section)
-        if cfg is None:
-            missing.append(section)
-            continue
-        for key in keys:
-            if key not in cfg:
-                missing.append(f"{section}.{key}")
-    if missing:
-        print("Config missing keys:", ", ".join(missing))
+    _apply_defaults(config, DEFAULT_CONFIG)
     return config
 
 def start_services(config: dict) -> CatchMemory:

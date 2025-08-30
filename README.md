@@ -17,12 +17,20 @@
    python install.py
    ```
 
+   On Windows you can simply execute `run.bat` to upgrade `pip`, install
+   dependencies and launch the service in one step.  Logs are written to
+   `log.log` in the repository root for troubleshooting.
+
 ## Configuration
 
 Edit `config.json` to match your environment.  Important fields include the
 Discord bot token and MongoDB connection details.  The dispatch ports can be
 left at their defaults unless you are running multiple instances on the same
 host.
+
+Missing keys are automatically populated with sensible defaults and any
+type mismatches are reported at startup.  Every option lives in this single
+configuration file so changes propagate consistently across machines.
 
 ## Running on Multiple Machines
 

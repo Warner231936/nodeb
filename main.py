@@ -77,14 +77,26 @@ def _apply_defaults(config: Dict[str, Any], defaults: Dict[str, Any], prefix: st
 
 
 def load_config(path: Path) -> Optional[Dict]:
-    """Load configuration and apply defaults with type checks."""
+    """Load configuration and apply defaults with type checks.
 
-    if not path.exists():
-        print("config.json not found; aborting start-up.")
-        return None
+    If ``path`` is missing or invalid a default configuration is written and
+    returned so the program can continue with sensible fallbacks.
+    """
 
-    with path.open() as f:
-        config = json.load(f)
+    try:
+        if not path.exists():
+            print("config.json not found; creating default configuration.")
+            path.write_text(json.dumps(DEFAULT_CONFIG, indent=2))
+            return deepcopy(DEFAULT_CONFIG)
+        with path.open() as f:
+            config = json.load(f)
+    except Exception as e:  # pragma: no cover - filesystem issues
+        print(f"Config load failed ({e}); using defaults.")
+        try:
+            path.write_text(json.dumps(DEFAULT_CONFIG, indent=2))
+        except Exception as e2:  # pragma: no cover
+            print(f"Failed to write default config: {e2}")
+        return deepcopy(DEFAULT_CONFIG)
 
     _apply_defaults(config, DEFAULT_CONFIG)
     return config

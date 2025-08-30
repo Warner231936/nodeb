@@ -58,3 +58,9 @@
 - Partially done: broader configuration validation schema.
 - Next: add unit tests for configuration logic.
 - Estimated completion: 30%
+
+- Done: added config auto-generation and listener fallbacks; documented system fallback behavior.
+- Worked on: strengthening error handling across configuration and listener scripts.
+- Partially done: broader fallback coverage for remaining modules.
+- Next: extend fallbacks to LLM operations and create unit tests.
+- Estimated completion: 35%

@@ -32,6 +32,15 @@ Missing keys are automatically populated with sensible defaults and any
 type mismatches are reported at startup.  Every option lives in this single
 configuration file so changes propagate consistently across machines.
 
+## Fallback Behavior
+
+- If `config.json` is missing or contains invalid data a default copy is
+  created automatically so services can still launch.
+- The standalone `listener.py` script uses the same configuration loader and
+  falls back to default host/ports on errors.
+- Optional libraries such as `discord.py`, `pymongo`, `requests` or
+  `tkinter` disable only their respective features when unavailable.
+
 ## Running on Multiple Machines
 
 Each machine should have the repository and configuration file.  On

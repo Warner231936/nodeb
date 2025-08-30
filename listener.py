@@ -1,9 +1,10 @@
 """Simple TCP listener acknowledging dispatched messages."""
 
-import json
 import socket
 import threading
 from pathlib import Path
+
+from main import DEFAULT_CONFIG, load_config
 
 
 def _handle(conn: socket.socket):
@@ -32,15 +33,18 @@ def _serve(port: int, host: str):
 
 
 def main():
-    cfg = json.loads(Path("config.json").read_text())
-    listener_cfg = cfg.get("listener", {})
+    config = load_config(Path("config.json")) or DEFAULT_CONFIG
+    listener_cfg = config.get("listener", DEFAULT_CONFIG.get("listener", {}))
     host = listener_cfg.get("host", "0.0.0.0")
     ports = listener_cfg.get("ports", [])
     threads = []
     for port in ports:
-        t = threading.Thread(target=_serve, args=(port, host), daemon=True)
-        t.start()
-        threads.append(t)
+        try:
+            t = threading.Thread(target=_serve, args=(port, host), daemon=True)
+            t.start()
+            threads.append(t)
+        except Exception as e:
+            print(f"Listener start failed on port {port}: {e}")
     for t in threads:
         t.join()
 

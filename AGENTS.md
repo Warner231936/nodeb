@@ -18,6 +18,7 @@
 
 - Automate multi-machine deployment and configuration validation.
 - Expand configuration validation with type checks and defaults.
+- Provide automated model downloads and checksum validation to ensure LLM availability.
 
 
 ## Progress
@@ -64,3 +65,9 @@
 - Partially done: broader fallback coverage for remaining modules.
 - Next: extend fallbacks to LLM operations and create unit tests.
 - Estimated completion: 35%
+
+- Done: implemented LLM offline mode and per-package installer retries; updated README.
+- Worked on: broader fallback support for model startup and dependency installation.
+- Partially done: automated model retrieval and comprehensive installer logging.
+- Next: add tests for installer fallback and integrate real models.
+- Estimated completion: 40%

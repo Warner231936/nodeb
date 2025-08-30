@@ -41,6 +41,7 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "thought_model": "X:/0Rcore/Rmodel/Phi-3-mini-4k-instruct-q4.gguf",
         "reflect_model": "X:/0Rcore/Rmodel/Phi-3-mini-4k-instruct-q4.gguf",
         "runner": "X:/0Rcore/bin/koboldcpp",
+        "offline_response": "LLM offline",
     },
 }
 
@@ -121,10 +122,11 @@ def start_services(config: dict) -> CatchMemory:
     llm_cfg = config.get("llm", {})
 
     # Start placeholder LLMs
-    llm_intent = LocalLLM(llm_cfg.get("intent_model"))
-    llm_emotion = LocalLLM(llm_cfg.get("emotion_model"))
-    llm_thoughts = LocalLLM(llm_cfg.get("thought_model"))
-    llm_reflect = LocalLLM(llm_cfg.get("reflect_model"))
+    offline_resp = llm_cfg.get("offline_response", "")
+    llm_intent = LocalLLM(llm_cfg.get("intent_model"), offline_resp)
+    llm_emotion = LocalLLM(llm_cfg.get("emotion_model"), offline_resp)
+    llm_thoughts = LocalLLM(llm_cfg.get("thought_model"), offline_resp)
+    llm_reflect = LocalLLM(llm_cfg.get("reflect_model"), offline_resp)
     for llm in (llm_intent, llm_emotion, llm_thoughts, llm_reflect):
         threading.Thread(target=llm.start, daemon=True).start()
 

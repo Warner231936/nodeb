@@ -26,11 +26,12 @@
     "timeout": 5,
     "max_tokens": 64
   },
-  "llm": {
-    "intent_model": "X:/0Rcore/IntentEmotion/BERT-tiny-emotion-intent",
-    "emotion_model": "X:/0Rcore/IntentEmotion/BERT-tiny-emotion-intent",
-    "thought_model": "X:/0Rcore/Rmodel/Phi-3-mini-4k-instruct-q4.gguf",
-    "reflect_model": "X:/0Rcore/Rmodel/Phi-3-mini-4k-instruct-q4.gguf",
-    "runner": "X:/0Rcore/bin/koboldcpp"
-  }
+    "llm": {
+        "intent_model": "X:/0Rcore/IntentEmotion/BERT-tiny-emotion-intent",
+        "emotion_model": "X:/0Rcore/IntentEmotion/BERT-tiny-emotion-intent",
+        "thought_model": "X:/0Rcore/Rmodel/Phi-3-mini-4k-instruct-q4.gguf",
+        "reflect_model": "X:/0Rcore/Rmodel/Phi-3-mini-4k-instruct-q4.gguf",
+        "runner": "X:/0Rcore/bin/koboldcpp",
+        "offline_response": "LLM offline"
+    }
 }

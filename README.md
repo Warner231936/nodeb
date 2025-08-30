@@ -40,6 +40,11 @@ configuration file so changes propagate consistently across machines.
   falls back to default host/ports on errors.
 - Optional libraries such as `discord.py`, `pymongo`, `requests` or
   `tkinter` disable only their respective features when unavailable.
+- Dependency installation retries each package individually if the bulk
+  install fails, reducing setup friction on unstable networks.
+- Local LLMs start in an offline mode when their model files are missing; in
+  this state `generate` returns the `llm.offline_response` string from
+  `config.json`.
 
 ## Running on Multiple Machines
 

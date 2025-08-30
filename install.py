@@ -23,8 +23,19 @@ def main() -> None:
     try:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pip"])
         subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", str(req_file)])
+        return
     except subprocess.CalledProcessError as exc:  # pragma: no cover - network issues
-        print(f"Dependency installation failed: {exc}")
+        print(f"Bulk dependency installation failed: {exc}")
+
+    # Fallback: attempt installation one package at a time
+    for line in req_file.read_text().splitlines():
+        pkg = line.strip()
+        if not pkg or pkg.startswith("#"):
+            continue
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", pkg])
+        except subprocess.CalledProcessError as exc:  # pragma: no cover
+            print(f"Failed to install {pkg}: {exc}")
 
 
 if __name__ == "__main__":

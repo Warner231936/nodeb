@@ -20,6 +20,8 @@
 - Expand configuration validation with type checks and defaults.
 - Provide automated model downloads and checksum validation to ensure LLM availability.
 
+- Set up mock services for database and reflection to support offline smoke tests.
+
 
 ## Progress
 ### Completed
@@ -77,3 +79,9 @@
 - Partially done: explicit thread joins and Discord bot shutdown.
 - Next: ensure all threads terminate cleanly and add tests for shutdown logic.
 - Estimated completion: 45%
+
+- Done: installed dependencies and verified smoke test execution.
+- Worked on: ensuring project readiness for trial run.
+- Partially done: external services remain offline during tests.
+- Next: provision mock services or run full stack to complete tests.
+- Estimated completion: 50%
